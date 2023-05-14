@@ -56,8 +56,8 @@ def extract_ids(dataframe):
 def API_call():
 
     auth_endpoint = "https://accounts.spotify.com/api/token"
-    client_id = "50b5d7d27ccf4be9b5692e82e90e7237"
-    client_secret = "0b057df10ebc4d59b8400ad3b4c6d85b"
+    client_id = "********"
+    client_secret = "************"
 
     # Encode the client ID and client secret as base64
     client_creds = f"{client_id}:{client_secret}"
