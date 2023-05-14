@@ -15,7 +15,7 @@ from selenium.webdriver.common.keys import Keys
 
 
 DATABASE_LOCATION = "sqlite:///trackssentiment.sqlite"
-USER_ID = "223e6vdbktpzkrwn6y6yqp3ay"
+USER_ID = "******"
 
 def Transform(df):
     #duration_ms to minutes
@@ -25,8 +25,8 @@ def Transform(df):
     return df
 
 def API():
-    refresh_token = "AQDnfSMZonkwD3iBOeZjZKrR5ZQ5hTIrXjCgm1hN3ZB-TTLNRaamAu1Uuby1pPogGxM5lYpFcNVBV8mTYmJ9zkdM38tGdE4L6SCASNtxnJOgAQ6j3aoEc0KedqowUBaEQsw"
-    base_64 = "NTBiNWQ3ZDI3Y2NmNGJlOWI1NjkyZTgyZTkwZTcyMzc6MGIwNTdkZjEwZWJjNGQ1OWI4NDAwYWQzYjRjNmQ4NWI="
+    refresh_token = "***************"
+    base_64 = "*********="
 
     query = "https://accounts.spotify.com/api/token"
 
