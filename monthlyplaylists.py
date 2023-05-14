@@ -51,8 +51,8 @@ def extract_ids(dataframe, number_of_times_played):
     return song_ids
 
 def API_request():
-    refresh_token = "AQD_Z7KflaTKOKFSjT2S9FCo676vAV1QX1c1YckK9fm7DQBJlEUwamPTLPbIn4ktBBa37LGzrmxFbe3Ma1CP4uKVr-pY1h028f0-PtslDmFq_cst7y2ywFgyVvTGjTmCz7k"
-    base_64 = "NTBiNWQ3ZDI3Y2NmNGJlOWI1NjkyZTgyZTkwZTcyMzc6MGIwNTdkZjEwZWJjNGQ1OWI4NDAwYWQzYjRjNmQ4NWI="
+    refresh_token = "***********"
+    base_64 = "**********="
 
     query = "https://accounts.spotify.com/api/token"
 
@@ -146,7 +146,7 @@ def add_to_playlist(token, playlist_id, song_ids):
 
 
 def main():
-    database = r"C:\Users\Andrea bb\Downloads\Spotify\trackssentiment.sqlite"
+    database = r"C:\Users\Andrea\Downloads\Spotify\trackssentiment.sqlite"
 
     # create a database connection
     conn = create_connection(database)
