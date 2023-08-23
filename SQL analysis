@@ -1,0 +1,162 @@
+SELECT COUNT(full_song_name), song_name, artist_name, spotify_song_id  
+FROM trackssentiment t
+WHERE played_at LIKE '%-08-%'
+GROUP BY full_song_name 
+ORDER BY COUNT(full_song_name) DESC, song_name;
+
+SELECT COUNT(full_song_name), song_name, artist_name, spotify_song_id  
+FROM trackssentiment t WHERE played_at LIKE '%-08-%' 
+GROUP BY full_song_name 
+ORDER BY COUNT(full_song_name) DESC;
+
+SELECT COUNT(artist_name) num__total_songs, artist_name 
+FROM trackssentiment t 
+GROUP BY 2
+ORDER BY 1 DESC; 
+
+SELECT artist_name, COUNT(DISTINCT song_name) AS num__dif_songs
+FROM trackssentiment t 
+GROUP BY 1
+ORDER BY 2 DESC;
+
+--ALTER TABLE songs_info ADD COLUMN full_song_name TEXT AS (song_name || ' - ' || artist_name);
+
+SELECT t.full_song_name, si.valence, si.acousticness, si.tempo 
+FROM trackssentiment t 
+JOIN songs_info si 
+ON t.spotify_song_id = si.spotify_song_id; 
+
+SELECT full_song_name, sentiment 
+FROM trackssentiment
+WHERE sentiment = (
+    SELECT MAX(sentiment_float)
+    FROM (
+        SELECT CAST(sentiment AS float) AS sentiment_float
+        FROM trackssentiment
+    ) AS subquery
+);
+
+SELECT full_song_name, duration FROM trackssentiment t 
+WHERE duration IN (SELECT MAX(duration) FROM trackssentiment);
+
+SELECT full_song_name, popularity FROM trackssentiment t 
+WHERE popularity = (SELECT MAX(popularity) FROM trackssentiment);
+
+SELECT full_song_name, duration FROM trackssentiment t 
+WHERE duration < (SELECT AVG(duration) FROM trackssentiment);
+
+SELECT COUNT(song_name) num_escuchada, song_name, artist_name 
+FROM trackssentiment t 
+WHERE artist_name = 
+		(SELECT artist_name 
+			FROM trackssentiment
+			WHERE song_name = "Maniac")
+GROUP BY 2
+ORDER BY 1 DESC;
+
+
+SELECT COUNT(song_name) FROM trackssentiment t 
+WHERE song_lyrics LIKE "%love%";
+
+SELECT DISTINCT(song_name) FROM trackssentiment t 
+WHERE sentiment BETWEEN 
+	(SELECT sentiment FROM trackssentiment WHERE song_name = "brutal") AND 
+	(SELECT sentiment FROM trackssentiment WHERE song_name = "Vicious") ;
+
+SELECT DISTINCT(t.song_name), si.tempo 
+FROM trackssentiment t
+JOIN songs_info si 
+ON t.spotify_song_id = si.spotify_song_id 
+WHERE tempo BETWEEN 
+	(SELECT tempo FROM songs_info  WHERE song_name = "brutal") AND 
+	(SELECT tempo FROM songs_info  WHERE song_name = "Vicious")
+ORDER BY si.tempo DESC; 
+
+SELECT * FROM trackssentiment 
+WHERE song_name IN (SELECT song_name FROM songs_info si);
+
+
+SELECT song_name, artist_name, popularity, duration,
+RANK() OVER (ORDER BY duration) AS popularity_rank 
+FROM trackssentiment t; 
+
+WITH AvgPopMonth AS(
+	SELECT strftime('%m', played_at) AS month,
+					AVG(popularity) as avgpop
+	FROM trackssentiment t 
+	GROUP BY month
+)
+SELECT month, avgpop FROM AvgPopMonth;
+
+
+With AvgDurArtist AS(
+	SELECT AVG(duration) avgdur, artist_name 
+	FROM trackssentiment t 
+	GROUP BY 2
+)
+SELECT avgdur, artist_name FROM AvgDurArtist;
+
+With CountSongs AS(
+	SELECT COUNT(*) song_count, artist_name 
+	FROM trackssentiment t 
+	GROUP BY 2
+)
+SELECT *
+FROM CountSongs
+WHERE song_count > 100
+ORDER BY song_count DESC;
+
+SELECT DISTINCT(song_name), COUNT(*) OVER (PARTITION BY full_song_name) AS CumulativePlays
+FROM trackssentiment t 
+ORDER BY CumulativePlays DESC;
+
+SELECT DISTINCT(strftime('%m', release_date)) AS month, COUNT(*) OVER(PARTITION BY strftime('%m', release_date)) songs_released
+FROM trackssentiment t;
+
+SELECT DISTINCT(strftime('%m', played_at)) AS month, COUNT(*) OVER(PARTITION BY strftime('%m', played_at)) songs_listened
+FROM trackssentiment t;
+
+SELECT DISTINCT(artist_name), AVG(duration) OVER(PARTITION BY artist_name) avgduration
+FROM trackssentiment t; 
+
+
+With CountSongs AS(
+	SELECT COUNT(*) song_count, artist_name  
+	FROM trackssentiment t 
+	GROUP BY 2
+)
+SELECT c.song_count, c.artist_name, AVG(t2.duration) OVER(PARTITION BY t2.artist_name) avgduration
+FROM CountSongs c
+JOIN trackssentiment t2
+ON c.artist_name = t2.artist_name
+WHERE c.song_count > 10;
+
+With CountSongs AS(
+	SELECT COUNT(*) song_count, artist_name  
+	FROM trackssentiment t 
+	GROUP BY 2
+),
+AvgDuration AS (
+	SELECT artist_name, AVG(duration) avgduration
+	FROM trackssentiment t2 
+	GROUP BY 1
+)
+SELECT c.song_count, c.artist_name, a.avgduration
+FROM CountSongs c
+JOIN AvgDuration a
+ON c.artist_name = a.artist_name
+WHERE c.song_count > 10
+ORDER BY 1 DESC;
+
+
+SELECT song_name, sentiment,
+       AVG(sentiment) OVER (PARTITION BY song_name ORDER BY played_at ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING) AS MovingAvgSentiment
+FROM trackssentiment;
+
+
+
+
+
+
+
+
