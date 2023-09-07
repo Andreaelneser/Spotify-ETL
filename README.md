@@ -3,4 +3,12 @@ This repository contains a project I did using the Spotify API to extract data f
 
 The project is in progress.
 
+* creds gets the "permanent" credentials with the right scopes.
+  
 * main.py has the ETL. It first requests the access token with the function API(). Then the API is consumed and the data from the last 50 played songs its retrieved with https://api.spotify.com/v1/me/player/recently-played?after{time}&limit=50. From there, a list is set for each column or variable. Then each song is itered and the info for all the columns is extracted, including the lyrics from genius (which needs another API). Then the duration is transformed from ms to min and finally the data is loaded to a SQLite database
+
+* data.py extracts info from the previosly created database "tracksentiment" to extract data for each song from Spotify.
+
+* monthlyplaylists.py creates a playlist in Spotify with the songs listened more that 5 times each month.
+
+* SQL analysis has some queries I've done to get info from the data.
